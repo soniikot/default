@@ -1,0 +1,22 @@
+apiVersion: dsdf.7sg.ai/v1
+kind: DataSourceDefinition
+metadata:
+  name: llm-endpoint
+  tags:
+    env: prod
+home:
+  tdfRef: azure-east
+connection:
+  type: api
+  provider: openai-compatible
+  endpoint: https://<your-resource>.openai.azure.com/
+  resource: deployments/<deployment-name>
+  notes: OpenAI-compatible endpoint used to generate Spark SQL and (optionally) narratives.
+auth:
+  method: apikey
+  secretRefs:
+  - openai-api-key
+secrets:
+  provider: inherit
+  inheritFromWdf: true
+  secretRefs: []

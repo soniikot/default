@@ -1,0 +1,78 @@
+apiVersion: tdf.7sg.ai/v1
+kind: TargetDefinition
+metadata:
+  name: azure-east
+  displayName: Azure East (logical target)
+  description: Logical Azure target spanning eastus/eastus2/northcentralus; used by
+    Financial Analysis workloads.
+  tags:
+    provider: azure
+    geo: us
+    tier: native
+target:
+  provider: azure
+  regions:
+  - eastus
+  - eastus2
+  - northcentralus
+  geography:
+    continent: na
+    country: us
+    zoneGroup: us-central
+  networking:
+    defaultNetworkPolicy: private
+  services:
+  - name: aks
+    type: kubernetes
+    providerService: AKS
+    capabilities:
+      supportsOIDCWorkloadIdentity: true
+      supportsPrivateEndpoints: true
+    defaults:
+      namespace: financial-analysis
+      resourceGroup: rg-financial-analysis
+      subscription: <azure-subscription-id>
+  - name: synapse
+    type: spark
+    providerService: Azure Synapse Spark
+    endpoints:
+      workspace: https://<synapse-workspace>.dev.azuresynapse.net
+    capabilities:
+      supportsPrivateEndpoints: true
+  - name: adls
+    type: object-store
+    providerService: ADLS Gen2
+    endpoints:
+      dfs: https://<storage-account>.dfs.core.windows.net
+    capabilities:
+      supportsPrivateEndpoints: true
+  - name: keyvault
+    type: secrets
+    providerService: Azure Key Vault
+    endpoints:
+      vault: https://<keyvault-name>.vault.azure.net/
+    capabilities:
+      supportsPrivateEndpoints: true
+  - name: managed-identity
+    type: identity
+    providerService: Managed Identity
+  - name: observability
+    type: observability
+    providerService: Azure Monitor / Log Analytics
+  - name: kafka-bridge
+    type: queue
+    providerService: Kafka-compatible broker (Event Hubs Kafka / Confluent / self-managed)
+    endpoints:
+      bootstrap: <azure-kafka-bootstrap>:9093
+    capabilities:
+      supportsTLS: true
+      supportsSASL: true
+    availability:
+      sla: best-effort
+  infrastructure:
+    clusters:
+    - name: <aks-cluster>
+      service: aks
+    secretStores:
+    - name: <keyvault-secret-store>
+      service: keyvault

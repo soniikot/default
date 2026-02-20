@@ -1,0 +1,30 @@
+apiVersion: dsdf.7sg.ai/v1
+kind: DataSourceDefinition
+metadata:
+  name: downloaded-taxi-data
+  tags:
+    env: prod
+home:
+  tdfRef: azure-east
+connection:
+  type: object-store
+  provider: adls-gen2
+  endpoint: abfss://<container>@<storage-account>.dfs.core.windows.net/
+  resource: taxi-tripdata/
+  format: parquet
+  notes: NYC TLC parquet files (yellow/green/fhv/fhvhv) staged under src_data and
+    uploaded to ADLS for Synapse.
+  paths:
+    yellow: taxi-tripdata/yellow_tripdata_{year}-{month}.parquet
+    green: taxi-tripdata/green_tripdata_{year}-{month}.parquet
+    fhv: taxi-tripdata/fhv_tripdata_{year}-{month}.parquet
+    fhvhv: taxi-tripdata/fhvhv_tripdata_{year}-{month}.parquet
+  sourceUrls:
+    tripdata: https://d37ci6vzurychx.cloudfront.net/trip-data/
+auth:
+  method: azure-managed-identity
+  secretRefs: []
+secrets:
+  provider: inherit
+  inheritFromWdf: true
+  secretRefs: []

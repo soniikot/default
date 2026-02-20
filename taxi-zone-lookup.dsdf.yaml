@@ -1,0 +1,22 @@
+apiVersion: dsdf.7sg.ai/v1
+kind: DataSourceDefinition
+metadata:
+  name: taxi-zone-lookup
+  tags:
+    env: prod
+home:
+  tdfRef: azure-east
+connection:
+  type: object-store
+  provider: adls-gen2
+  endpoint: abfss://<container>@<storage-account>.dfs.core.windows.net/
+  resource: taxi-tripdata/taxi_zone_lookup.csv
+  format: csv
+  sourceUrl: https://d37ci6vzurychx.cloudfront.net/misc/taxi_zones.zip
+auth:
+  method: azure-managed-identity
+  secretRefs: []
+secrets:
+  provider: inherit
+  inheritFromWdf: true
+  secretRefs: []

@@ -1,0 +1,67 @@
+apiVersion: tdf.7sg.ai/v1
+kind: TargetDefinition
+metadata:
+  name: crusoe
+  displayName: Crusoe US (logical target)
+  description: Logical Crusoe Cloud target for running app containers and (optionally)
+    AI endpoints.
+  tags:
+    provider: crusoe
+    geo: us
+    tier: alternate
+target:
+  provider: crusoe
+  regions:
+  - us-central
+  geography:
+    continent: na
+    country: us
+    zoneGroup: us-central
+  networking:
+    defaultNetworkPolicy: private
+  services:
+  - name: crusoe-k8s
+    type: kubernetes
+    providerService: Crusoe Kubernetes
+    capabilities:
+      gpuTypes:
+      - <gpu-type>
+      supportsOIDCWorkloadIdentity: true
+    defaults:
+      namespace: financial-analysis
+  - name: crusoe-ai
+    type: ml-platform
+    providerService: Crusoe AI Endpoints
+    endpoints:
+      openaiCompatible: https://<crusoe-ai-endpoint>/v1
+    capabilities:
+      gpuTypes:
+      - <gpu-type>
+  - name: vast
+    type: object-store
+    providerService: VAST (S3-compatible)
+    endpoints:
+      s3: https://<vast-s3-endpoint>
+  - name: secrets
+    type: secrets
+    providerService: External Secrets / Vault
+  - name: identity
+    type: identity
+    providerService: OIDC / Workload Identity
+  - name: observability
+    type: observability
+    providerService: Prometheus / Grafana / Logs
+  - name: kafka-bridge
+    type: queue
+    providerService: Kafka (Strimzi/Confluent)
+    endpoints:
+      bootstrap: <crusoe-kafka-bootstrap>:9093
+    capabilities:
+      supportsTLS: true
+      supportsSASL: true
+    availability:
+      sla: best-effort
+  infrastructure:
+    clusters:
+    - name: <crusoe-cluster>
+      service: crusoe-k8s

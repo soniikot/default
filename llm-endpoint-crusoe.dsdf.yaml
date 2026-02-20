@@ -1,0 +1,23 @@
+apiVersion: dsdf.7sg.ai/v1
+kind: DataSourceDefinition
+metadata:
+  name: llm-endpoint-crusoe
+  tags:
+    env: prod
+home:
+  tdfRef: crusoe
+connection:
+  type: api
+  provider: openai-compatible
+  endpoint: https://<crusoe-ai-endpoint>/v1
+  resource: models/<model-id>
+  notes: OpenAI-compatible endpoint hosted on Crusoe (used in Endpoints-at-Crusoe
+    scenario).
+auth:
+  method: apikey
+  secretRefs:
+  - crusoe-openai-api-key
+secrets:
+  provider: inherit
+  inheritFromWdf: true
+  secretRefs: []
